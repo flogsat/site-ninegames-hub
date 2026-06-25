@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九游 · 信息卡片导航页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background-color: #f5f7fc;
+            color: #1e1f2b;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 深色头图 */
+        .hero {
+            background: linear-gradient(145deg, #0b0d17 0%, #1a1d2e 100%);
+            color: #eceef5;
+            padding: 3.5rem 1.5rem 2.8rem;
+            text-align: center;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(99, 130, 255, 0.08), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero h1 span {
+            color: #b3c7ff;
+            font-weight: 400;
+        }
+
+        .hero .sub {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0.8rem auto 0;
+            font-weight: 300;
+        }
+
+        .hero .tagline {
+            display: inline-block;
+            margin-top: 1.6rem;
+            padding: 0.3rem 1.6rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 80px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(2px);
+            color: #ccd6ff;
+        }
+
+        /* 浅色正文区 */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3.5rem;
+            flex: 1;
+        }
+
+        /* 卡片网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 1.8rem;
+            margin: 2.2rem 0;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 1.2rem;
+            padding: 1.8rem 1.6rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02), 0 8px 28px rgba(0, 20, 50, 0.04);
+            transition: transform 0.15s ease, box-shadow 0.2s;
+            border: 1px solid rgba(200, 210, 230, 0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(40, 60, 120, 0.06);
+        }
+
+        .card .icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 550;
+            margin: 0.2rem 0 0.6rem;
+            letter-spacing: -0.01em;
+            color: #10131f;
+        }
+
+        .card p, .card li {
+            font-size: 0.95rem;
+            color: #2f3346;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0.4rem;
+        }
+
+        .card ul li {
+            padding: 0.2rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .card ul li::before {
+            content: '·';
+            position: absolute;
+            left: 0.2rem;
+            color: #4d6aff;
+            font-weight: 700;
+        }
+
+        /* 强调色链接 */
+        a {
+            color: #2a4bff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.1s;
+        }
+
+        a:hover {
+            color: #0018a8;
+            text-decoration: underline;
+        }
+
+        .inline-link-card {
+            background: #f0f4ff;
+            border-radius: 1rem;
+            padding: 1.6rem 2rem;
+            margin: 2.4rem 0 1.2rem;
+            border-left: 4px solid #2a4bff;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.4rem 0.7rem;
+        }
+
+        .inline-link-card p {
+            font-size: 1.05rem;
+            color: #1a1e30;
+        }
+
+        .inline-link-card a {
+            font-weight: 550;
+        }
+
+        /* FAQ 摘要 */
+        .faq-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem 2rem;
+            margin: 2.5rem 0 1rem;
+        }
+
+        .faq-item {
+            background: #ffffff;
+            padding: 1rem 1.2rem 1.2rem 1.2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid #e6ecf5;
+        }
+
+        .faq-item strong {
+            display: block;
+            margin-bottom: 0.2rem;
+            font-weight: 570;
+            color: #0b0f1f;
+        }
+
+        .faq-item p {
+            font-size: 0.9rem;
+            color: #363c52;
+        }
+
+        /* 适合人群 小标记 */
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.8rem 0 0.3rem;
+        }
+
+        .badge {
+            background: #eef2fa;
+            color: #1d263b;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 450;
+            letter-spacing: 0.01em;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: #d8dfed;
+            margin: 2rem 0 1rem;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.8rem;
+            font-size: 0.9rem;
+            color: #58607a;
+            border-top: 1px solid #dce2ef;
+        }
+
+        .footer-note a {
+            font-weight: 400;
+            color: #2a4bff;
+        }
+
+        @media (max-width: 650px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero .sub {
+                font-size: 1rem;
+            }
+            .faq-summary {
+                grid-template-columns: 1fr;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .inline-link-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 深色头图 -->
+    <header class="hero">
+        <h1><span>九游</span> · 信息卡片</h1>
+        <p class="sub">再次访问 · 收藏 · 持续关注&ensp;一个实用信息整理页</p>
+        <span class="tagline">📌 简明说明 / 常看常新</span>
+    </header>
+
+    <!-- 浅色正文区 -->
+    <div class="container">
+
+        <!-- 简介段落：再次访问和收藏的缘起 -->
+        <section style="margin-bottom: 0.5rem;">
+            <p style="font-size: 1.05rem; max-width: 720px;">
+                如果你之前来过，或者想把它记在书签里，这个页面整理了一些与 <a href="https://site-ninegames.com.cn">九游</a> 相关的用途场景和适合人群。没有复杂的推销，只有一份可以反复回看、持续更新的参考框架。
+            </p>
+        </section>
+
+        <!-- 用途卡片 + 适合人群卡片（混合网格） -->
+        <div class="card-grid">
+            <!-- 卡片1：主视觉/用途 -->
+            <div class="card">
+                <div class="icon">🔍</div>
+                <h3>日常浏览与归档</h3>
+                <p>作为信息中转点，适合随手查看内容更新、栏目变化。很多用户会固定收藏，方便后续再次回到该页面。</p>
+                <div class="badge-group">
+                    <span class="badge">再次访问</span>
+                    <span class="badge">书签场景</span>
+                </div>
+            </div>
+
+            <!-- 卡片2：用途 -->
+            <div class="card">
+                <div class="icon">🧩</div>
+                <h3>模块化信息入口</h3>
+                <p>通过不同卡片快速了解功能边界、适用对象。适合新接触的人建立整体印象，也适合老用户快速对照。</p>
+                <ul>
+                    <li>用途速览</li>
+                    <li>人群标签</li>
+                    <li>常见疑问摘要</li>
+                </ul>
+            </div>
+
+            <!-- 卡片3：适合人群 -->
+            <div class="card">
+                <div class="icon">👥</div>
+                <h3>适合人群一览</h3>
+                <p>无论你是普通访客、内容整理者，还是想找一个稳定的关注锚点，都可以找到对应的使用理由。</p>
+                <div class="badge-group">
+                    <span class="badge">偶尔访客</span>
+                    <span class="badge">长期关注</span>
+                    <span class="badge">信息收藏</span>
+                </div>
+            </div>
+
+            <!-- 卡片4：持续关注角度 -->
+            <div class="card">
+                <div class="icon">📌</div>
+                <h3>持续关注的理由</h3>
+                <p>页面本身保持内容更新节奏，结构稳定但表述常有调整。适合定期回看，获取相对可靠的信息轮廓。</p>
+                <ul>
+                    <li>内容结构迭代</li>
+                    <li>卡片式阅读</li>
+                    <li>低干扰、高信息量</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 自然链接段落（句子里嵌入九游链接） -->
+        <div class="inline-link-card">
+            <p>
+                📎 如果你想把 <a href="https://site-ninegames.com.cn">九游</a> 加入浏览器书签或时常回看，这个页面本身就是为一个轻量的信息锚点而整理。无论是初次见面还是再次归来，都希望卡片里的内容能给你一份清晰的参照。
+            </p>
+        </div>
+
+        <!-- FAQ 摘要（两条） -->
+        <h2 style="font-weight: 470; font-size: 1.2rem; margin: 2rem 0 0.2rem; color: #121626;">❓ 常见疑问摘要</h2>
+        <div class="faq-summary">
+            <div class="faq-item">
+                <strong>这个页面会一直更新吗？</strong>
+                <p>内容会随信息变化做调整，卡片方向和表述也会不定期优化。建议收藏后隔段时间回看，会有更完整的体验。</p>
+            </div>
+            <div class="faq-item">
+                <strong>适合哪些人收藏？</strong>
+                <p>对信息整理、持续关注某个站点有兴趣的人；不想被强引导，希望自己慢慢了解的人群。</p>
+            </div>
+        </div>
+
+        <!-- 额外简述场景（再次访问角度） -->
+        <hr>
+        <section style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.8rem; align-items: baseline;">
+            <p style="font-size: 0.95rem;"><span style="font-weight: 500;">🔖 再次访问小建议：</span> 你可以把当前页面添加到书签栏，或者用浏览器集锦功能收藏。下次回来时，卡片内容和顺序可能会略有调整，但整体框架依然清晰。</p>
+            <span style="font-size: 0.9rem; color: #455173; background: #eef2fa; padding: 0.2rem 0.8rem; border-radius: 60px;">持续关注 · 不打扰</span>
+        </section>
+
+        <!-- 底部自然包含九游链接（第二次出现，句子不同） -->
+        <footer class="footer-note">
+            <p>信息卡片式说明 · 基于持续关注与再次访问视角整理 · 核心关联 <a href="https://site-ninegames.com.cn">九游</a></p>
+        </footer>
+    </div>
+
+</body>
+</html>
